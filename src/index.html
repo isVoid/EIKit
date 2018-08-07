@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <input type="button" value="Select Old Edit Index..." onclick="showOldEISelector()">
+    <input type="button" value="Select New Edit Index..." onclick="showNewEISelector()">
+    <input type="button" value="Show New Clips" onclick="computeNewClip()">
+    <input type="button" value="Show Old Clips" onclick="computeOldClip()">
+    <input type="button" value="Show Dropped Clips" onclick="computeDroppedClip()">
+    <input type="button" value="Show Clips Unchanged" onclick="computeUnchangedClips()">
+    <input type="button" value="Show Cut Point Change" onclick="computeCutPointChangeClips()">
+    <input type="button" value="Show Source Point Change" onclick="computeSourceChangedClip()">
+    <input type="button" value="Show Track Change" onclick="computeTrackChangedClip()">
+    <input type="button" value="Show FPS Change" onclick="computeFPSChangedClips">
+
+    <div name="ClipView" class="container-fluid">
+        <div class="row mb-1">
+            <div class="col-6">Name</div>
+            <div class="col">Record In</div>
+            <div class="col">Record Out</div>
+            <div class="col">Source In</div>
+            <div class="col">Source Out</div>
+        </div>
+        <div id="ClipChangeDiv">            
+            <div class="row mb-1" v-for="C in CArr" v-cloak>
+                <div class="col-6 text-truncate">{{ C.Name }}</div>
+                <div class="col">{{C['Record In']}}</div>
+                <div class="col">{{C['Record Out']}}</div>
+                <div class="col">{{C['Source In']}}</div>
+                <div class="col">{{C['Source Out']}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Some Bootstrap voodoo -->
+    <script>
+    window.$ = window.jQuery = require('jquery'); // not sure if you need this at all
+    window.Bootstrap = require('bootstrap');
+    </script>
+    <!-- System libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.slim.js"></script>
+    <script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
+    <!-- Personal scripts goes here. -->
+    <script src="index.js"></script>
+</body>
+</html>
