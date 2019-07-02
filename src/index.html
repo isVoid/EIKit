@@ -6,38 +6,71 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <title>Document</title>
+    <title>EIKit</title>
 </head>
 <body>
-    <input type="button" value="Select Old Edit Index..." onclick="showOldEISelector()">
-    <input type="button" value="Select New Edit Index..." onclick="showNewEISelector()">
-    <input type="button" value="Show New Clips" onclick="computeNewClip()">
-    <input type="button" value="Show Old Clips" onclick="computeOldClip()">
-    <input type="button" value="Show Dropped Clips" onclick="computeDroppedClip()">
-    <input type="button" value="Show Clips Unchanged" onclick="computeUnchangedClips()">
-    <input type="button" value="Show Cut Point Change" onclick="computeCutPointChangeClips()">
-    <input type="button" value="Show Source Point Change" onclick="computeSourceChangedClip()">
-    <input type="button" value="Show Track Change" onclick="computeTrackChangedClip()">
-    <input type="button" value="Show FPS Change" onclick="computeFPSChangedClips">
-
-    <div name="ClipView" class="container-fluid">
-        <div class="row mb-1">
-            <div class="col-6">Name</div>
-            <div class="col">Record In</div>
-            <div class="col">Record Out</div>
-            <div class="col">Source In</div>
-            <div class="col">Source Out</div>
-        </div>
-        <div id="ClipChangeDiv">            
-            <div class="row mb-1" v-for="C in CArr" v-cloak>
-                <div class="col-6 text-truncate">{{ C.Name }}</div>
-                <div class="col">{{C['Record In']}}</div>
-                <div class="col">{{C['Record Out']}}</div>
-                <div class="col">{{C['Source In']}}</div>
-                <div class="col">{{C['Source Out']}}</div>
-            </div>
-        </div>
+  <div id="ControlDiv" class="container">
+    <div class="row">
+      <div class="col">
+          <button type="button" class="btn btn-secondary m-1" onclick="showOldEISelector()">Select Old Edit Index...</button>
+      </div>
+      <div class="col">
+        {{ OldEITitle }}
+      </div>
+      <div class="col">
+          <button type="button" class="btn btn-secondary m-1" onclick="showNewEISelector()">Select New Edit Index...</button>
+      </div>
+      <div class="col">
+        {{ NewEITitle }}
+      </div>
     </div>
+
+    <div class="row mb-2">
+      <div class="col">
+          <button type="button" class="btn btn-primary" class="btn btn-primary" onclick="computeNewClip()">New Clips</button>
+      </div>
+      <div class="col">
+          <input type="button" class="btn btn-primary" value="Dropped Clips" onclick="computeDroppedClip()">
+      </div>
+      <div class="col">
+          <input type="button" class="btn btn-primary" value="Cut Point Change" onclick="computeCutPointChangeClips()">
+      </div>
+      <div class="col">
+          <input type="button" class="btn btn-primary" value="Source Point Change" onclick="computeSourceChangedClip()">
+      </div>
+      <div class="col">
+          <input type="button" class="btn btn-primary" value="Track Change" onclick="computeTrackChangedClip()">
+      </div>
+      <div class="col">
+          <input type="button" class="btn btn-primary" value="FPS Change" onclick="computeFPSChangedClips()">
+      </div>
+    </div>
+  </div>
+
+    <input type="button" hidden class="btn btn-primary" value="Show Old Clips" onclick="computeOldClip()">
+    <input type="button" hidden class="btn btn-primary" value="Show Clips Unchanged" onclick="computeUnchangedClips()">
+
+    <table id="ClipChangeDiv" class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Record In</th>
+          <th scope="col">Record Out</th>
+          <th scope="col">Source In</th>
+          <th scope="col">Source Out</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="C in CArr" v-cloak>
+          <th scope="row">{{ C.Name }}</th>
+          <td>{{C['Record In']}}</td>
+          <td>{{C['Record Out']}}</td>
+          <td>{{C['Source In']}}</td>
+          <td>{{C['Source Out']}}</td>
+        </tr>
+      </tbody>
+    </table>
+
 
     <!-- Some Bootstrap voodoo -->
     <script>

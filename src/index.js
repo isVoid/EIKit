@@ -19,10 +19,21 @@ var clipVue = new Vue({
         CArr : []
     }
 })
+var controlVue = new Vue({
+  el : '#ControlDiv',
+  data : {
+      title : '',
+      NewEITitle : '',
+      OldEITitle : ''
+  }
+})
 
 function showOldEISelector() {
     oldEI = []
     ipcRenderer.send("openOldEISelector")
+    ipcRenderer.on("OldEITitleResponse", (event, params) => {
+      controlVue.OldEITitle = params
+    })
     ipcRenderer.on("OldEIResponse", (event, params) => {
         if (params['C'] == 'C' &&
             params['Name'] != 'Text')
@@ -33,6 +44,9 @@ function showOldEISelector() {
 function showNewEISelector() {
     newEI = []
     ipcRenderer.send("showNewEISelector")
+    ipcRenderer.on("NewEITitleResponse", (event, params) => {
+      controlVue.NewEITitle = params
+    })
     ipcRenderer.on("NewEIResponse", (event, params) => {
         if (params['C'] == 'C' &&
             params['Name'] != 'Text')
@@ -54,7 +68,7 @@ function computeNewClip() {
     for (let i = 0; i < newEI.length; i++) {
         var exists = false;
         for (let j = 0; j < oldEI.length; j++) {
-            if (oldEI[j].Name == newEI[i].Name) 
+            if (oldEI[j].Name == newEI[i].Name)
             {
                 exists = true;
             }
@@ -110,7 +124,7 @@ function computeOldClip() {
     for (let i = 0; i < newEI.length; i++) {
         var exists = false;
         for (let j = 0; j < oldEI.length; j++) {
-            if (oldEI[j].Name == newEI[i].Name) 
+            if (oldEI[j].Name == newEI[i].Name)
             {
                 exists = true;
             }
@@ -139,21 +153,20 @@ function computeUnchangedClips() {
         alert ('newEI is not selected')
         return
     }
-    // console.log(newEI)
-    // console.log(oldEI)
+
     clipsRemainUnchanged = []
     for (let i = 0; i < newEI.length; i++) {
         // console.log(newEI[i]['Record In'])
         var same = false;
         for (let j = 0; j < oldEI.length; j++) {
-            if (oldEI[j].Name == newEI[i].Name && 
+            if (oldEI[j].Name == newEI[i].Name &&
                 oldEI[j]['Record In'] == newEI[i]['Record In'] &&
                 oldEI[j]['Record Out'] == newEI[i]['Record Out'] &&
                 oldEI[j]['Source In'] == newEI[i]['Source In'] &&
                 oldEI[j]['Source Out'] == newEI[i]['Source Out'] &&
                 oldEI[j]['V'] == newEI[i]['V'] &&
                 oldEI[j]['Source FPS'] == newEI[i]['Source FPS']
-            ) 
+            )
             {
                 same = true;
             }
@@ -179,20 +192,15 @@ function computeCutPointChangeClips() {
         return
     }
 
-    // console.log(newEI)
-    // console.log(oldEI)
     clipsCutPointChanged = []
     for (let i = 0; i < newEI.length; i++) {
         // console.log(newEI[i]['Record In'])
         var cutChanged = false;
         for (let j = 0; j < oldEI.length; j++) {
-            if (oldEI[j].Name == newEI[i].Name && 
+            if (oldEI[j].Name == newEI[i].Name &&
                 (oldEI[j]['Record In'] != newEI[i]['Record In'] ||
                 oldEI[j]['Record Out'] != newEI[i]['Record Out'])
-            ) 
-            {
-                console.log(oldEI[j])
-                console.log(newEI[i])
+            ){
                 cutChanged = true;
             }
         }
@@ -200,14 +208,14 @@ function computeCutPointChangeClips() {
             clipsCutPointChanged.push(newEI[i])
         }
     }
-    
+
     clipVue.title = 'Clips Cut Point Changed'
     clipVue.CArr = clipsCutPointChanged
 }
 
 // A Clip Source Changed is defined as follows:
 // The clip is in old EI as well as in new EI
-// The clip in oldEI has a different Src In/Out with that of 
+// The clip in oldEI has a different Src In/Out with that of
 function computeSourceChangedClip() {
     if (oldEI == undefined) {
         alert ("oldEI is not selected")
@@ -224,10 +232,10 @@ function computeSourceChangedClip() {
         // console.log(newEI[i]['Record In'])
         var sourceChanged = false;
         for (let j = 0; j < oldEI.length; j++) {
-            if (oldEI[j].Name == newEI[i].Name && 
+            if (oldEI[j].Name == newEI[i].Name &&
                 (oldEI[j]['Source In'] != newEI[i]['Source In'] ||
                 oldEI[j]['Source Out'] != newEI[i]['Source Out'])
-            ) 
+            )
             {
                 console.log(oldEI[j])
                 console.log(newEI[i])
@@ -244,7 +252,7 @@ function computeSourceChangedClip() {
 
 // A Clip Source Changed is defined as follows:
 // The clip is in old EI as well as in new EI
-// The clip in oldEI has a different Src In/Out with that of 
+// The clip in oldEI has a different Src In/Out with that of
 function computeTrackChangedClip() {
     if (oldEI == undefined) {
         alert ("oldEI is not selected")
@@ -254,16 +262,15 @@ function computeTrackChangedClip() {
         alert ('newEI is not selected')
         return
     }
-    // console.log(newEI)
-    // console.log(oldEI)
+    
     clipsTrackChanged = []
     for (let i = 0; i < newEI.length; i++) {
         // console.log(newEI[i]['Record In'])
         var trackChanged = false;
         for (let j = 0; j < oldEI.length; j++) {
-            if (oldEI[j].Name == newEI[i].Name && 
+            if (oldEI[j].Name == newEI[i].Name &&
                 (oldEI[j]['V'] != newEI[i]['V'])
-            ) 
+            )
             {
                 console.log(oldEI[j])
                 console.log(newEI[i])
@@ -280,7 +287,7 @@ function computeTrackChangedClip() {
 
 // A Clip Source Changed is defined as follows:
 // The clip is in old EI as well as in new EI
-// The clip in oldEI has a different Src In/Out with that of 
+// The clip in oldEI has a different Src In/Out with that of
 function computeFPSChangedClips() {
     if (oldEI == undefined) {
         alert ("oldEI is not selected")
@@ -297,9 +304,9 @@ function computeFPSChangedClips() {
         // console.log(newEI[i]['Record In'])
         var fpsChanged = false;
         for (let j = 0; j < oldEI.length; j++) {
-            if (oldEI[j].Name == newEI[i].Name && 
+            if (oldEI[j].Name == newEI[i].Name &&
                 (oldEI[j]['Source FPS'] != newEI[i]['Source FPS'])
-            ) 
+            )
             {
                 console.log(oldEI[j])
                 console.log(newEI[i])
